@@ -458,6 +458,8 @@ Built with ❤️ using [LangGraph](https://langchain-ai.github.io/langgraph/), 
 
 **[⭐ Star this repo](https://github.com/Evidion-AI/EvidionAI)** if EvidionAI is useful to you!
 
+Research Paper: https://doi.org/10.13140/RG.2.2.23054.93767
+
 ---
 
 *Created by [Nikita Sakovich](https://github.com/NekkittAY) — Research Engineer*
