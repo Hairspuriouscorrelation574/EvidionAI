@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Evidion — Autonomous AI Research Platform</title>
+  <meta name="description" content="Evidion is an autonomous multi-agent AI research system. Submit a hypothesis — get a structured, evidence-backed report in hours, not months."/>
+  <meta property="og:title"        content="Evidion — Autonomous Research Platform"/>
+  <meta property="og:description"  content="Submit a hypothesis. Evidion searches literature, runs experiments, and delivers a structured research report."/>
+  <meta property="og:type"         content="website"/>
+  <meta property="og:image"        content="/og-image.png"/>
+  <meta name="twitter:card"        content="summary_large_image"/>
+  <meta name="twitter:title"       content="Evidion — Autonomous Research Platform"/>
+  <meta name="twitter:description" content="Multi-agent AI research: literature search, code execution, skeptic review — automated end to end."/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="icon" type="image/png"     href="/favicon.png" sizes="32x32"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="about.css"/>
+  <style>
+    /* ── Landing-only overrides ─────────────────────────────────── */
+
+    /* Nav: show both login and register */
+    .nav-actions {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-login {
+      font-size: 13px; font-weight: 500;
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 7px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: color .15s, border-color .15s;
+      font-family: var(--font-sans);
+    }
+    .nav-login:hover { color: var(--text-1); border-color: var(--accent); }
+    .nav-register {
+      font-size: 13px; font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+      padding: 7px 18px;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      transition: opacity .15s;
+      font-family: var(--font-sans);
+    }
+    .nav-register:hover { opacity: .85; }
+
+    /* Hero: two CTA buttons */
+    .hero-ctas {
+      display: flex; align-items: center; gap: 14px;
+      margin-top: 40px; flex-wrap: wrap;
+    }
+    .hero-btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px;
+      background: var(--accent);
+      color: #fff; font-weight: 700; font-size: 15px;
+      border-radius: 10px; text-decoration: none;
+      font-family: var(--font-sans);
+      transition: opacity .15s, transform .15s;
+      letter-spacing: -.01em;
+    }
+    .hero-btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+
+    .hero-btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--text-2); font-weight: 500; font-size: 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px; text-decoration: none;
+      font-family: var(--font-sans);
+      transition: color .15s, border-color .15s;
+    }
+    .hero-btn-secondary:hover { color: var(--text-1); border-color: var(--accent-muted, #6c5ce7); }
+
+    /* Auth modal overlay */
+    .auth-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(5,5,12,.8); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .auth-overlay.open { display: flex; }
+    .auth-modal {
+      background: var(--bg-2, #111118);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%; max-width: 400px;
+      position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+      animation: modal-in .2s ease;
+    }
+    @keyframes modal-in {
+      from { opacity:0; transform: translateY(16px) scale(.97); }
+      to   { opacity:1; transform: none; }
+    }
+    .auth-modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none;
+      color: var(--text-muted, #555); cursor: pointer;
+      padding: 6px; border-radius: 6px;
+      transition: color .15s;
+    }
+    .auth-modal-close:hover { color: var(--text-1); }
+    .auth-modal-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 18px; font-weight: 700;
+      color: var(--accent, #6c5ce7); margin-bottom: 8px;
+      font-family: var(--font-sans);
+    }
+    .auth-modal-sub {
+      font-size: 13px; color: var(--text-muted, #555);
+      margin-bottom: 28px; line-height: 1.5;
+    }
+    .auth-field { margin-bottom: 14px; }
+    .auth-field label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--text-2, #888); margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: .07em;
+      font-family: var(--font-sans);
+    }
+    .auth-field input {
+      width: 100%; padding: 11px 14px;
+      background: var(--bg-inp, #0d0d16);
+      border: 1px solid var(--border);
+      border-radius: 9px; color: var(--text-1, #e8e8f0);
+      font-size: 14px; font-family: var(--font-sans);
+      outline: none; box-sizing: border-box;
+      transition: border-color .15s;
+    }
+    .auth-field input:focus { border-color: var(--accent, #6c5ce7); }
+    .auth-submit {
+      width: 100%; padding: 12px;
+      background: var(--accent, #6c5ce7);
+      color: #fff; font-weight: 700; font-size: 14px;
+      border: none; border-radius: 9px; cursor: pointer;
+      font-family: var(--font-sans); margin-top: 6px;
+      transition: opacity .15s;
+    }
+    .auth-submit:hover { opacity: .88; }
+    .auth-submit:disabled { opacity: .5; cursor: default; }
+    .auth-error {
+      font-size: 12px; color: #ef4444; margin-top: 10px;
+      display: none; line-height: 1.4;
+    }
+    .auth-switch {
+      text-align: center; margin-top: 20px;
+      font-size: 13px; color: var(--text-muted, #555);
+      font-family: var(--font-sans);
+    }
+    .auth-switch a {
+      color: var(--accent-light, #a78bfa); text-decoration: none; font-weight: 600;
+    }
+    .auth-switch a:hover { text-decoration: underline; }
+    .auth-tabs {
+      display: flex; gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 9px; overflow: hidden; margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1; padding: 9px;
+      background: none; border: none; cursor: pointer;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-muted, #555);
+      font-family: var(--font-sans);
+      transition: color .15s, background .15s;
+    }
+    .auth-tab.active {
+      background: var(--accent, #6c5ce7);
+      color: #fff;
+    }
+
+    /* Verify step inside modal */
+    .verify-step { display: none; }
+    .verify-step.visible { display: block; }
+    .verify-code-row {
+      display: flex; gap: 8px;
+    }
+    .verify-code-row input {
+      flex: 1; text-align: center; letter-spacing: .2em;
+      font-size: 22px; font-family: var(--font-mono);
+    }
+
+    /* Stats bar */
+    .landing-stats {
+      display: flex; gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      margin-top: 56px;
+    }
+    .stat-item {
+      flex: 1; padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      background: var(--bg-2, #0d0d18);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-n {
+      font-size: 28px; font-weight: 800;
+      font-family: var(--font-sans); color: var(--accent-light, #a78bfa);
+      letter-spacing: -.02em; line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-l {
+      font-size: 12px; color: var(--text-muted, #555);
+      font-family: var(--font-mono); text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    @media (max-width: 600px) {
+      .landing-stats { flex-direction: column; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat-item:last-child { border-bottom: none; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* Trusted by / social proof */
+    .social-proof {
+      margin-top: 24px;
+      font-size: 12px; color: var(--text-muted, #555);
+      font-family: var(--font-mono);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sp-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/about" class="nav-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Evidion
+    </a>
+    <div class="nav-actions">
+      <a href="#" class="nav-login" onclick="openAuth('login'); return false;">Sign in</a>
+      <a href="#" class="nav-register" onclick="openAuth('register'); return false;">Get started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-noise"></div>
+    <div class="hero-lines"></div>
+    <div class="container hero-inner">
+      <div class="hero-label">EvidionAI — Research Assistant</div>
+      <h1 class="hero-title">
+        The research lab<br>
+        <span class="hero-title-em">runs itself.</span>
+      </h1>
+      <p class="hero-sub">
+        Evidion is an autonomous multi-agent AI system that conducts end-to-end scientific research —
+        from hypothesis and literature search, through computation and analysis,
+        to a structured, peer-reviewable report.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#" class="hero-btn-primary" onclick="openAuth('register'); return false;">
+          Start for free
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="/about" class="hero-btn-secondary">
+          Learn how it works
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="social-proof">
+        <div class="sp-dot"></div>
+        Platform is live and accepting researchers
+      </div>
+
+      <div class="landing-stats">
+        <div class="stat-item">
+          <div class="stat-n">5</div>
+          <div class="stat-l">Specialized Agents</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-n">100/day</div>
+          <div class="stat-l">Research Questions</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </section>
+
+  <!-- PROBLEM / IDEA -->
+  <section class="section" id="idea">
+    <div class="container">
+      <div class="s-label">The Problem</div>
+      <h2 class="s-title">Research moves at the speed of a researcher.<br><em>Until now.</em></h2>
+      <div class="idea-grid">
+        <div class="idea-prose">
+          <p>Scientific progress is bottlenecked not by lack of intelligence — but by the <strong>mechanics of research</strong>: the weeks spent in literature search, the months of iterative coding, the constant context-switching between tools, databases, and frameworks.</p>
+          <p>Evidion collapses that timeline. A researcher poses a question in natural language. The system takes it from there — autonomously planning, searching, computing, questioning its own conclusions, and delivering a structured report.</p>
+          <p>The result: <strong>hours instead of months</strong>. Human researchers stay where they belong — asking sharper questions, not running mechanical tasks.</p>
+        </div>
+        <div class="idea-flow-card">
+          <div class="ifc-header">Research Lifecycle</div>
+          <div class="ifc-steps">
+            <div class="ifc-step">
+              <div class="ifc-dot dot-1"></div>
+              <div class="ifc-text">
+                <div class="ifc-step-title">Hypothesis</div>
+                <div class="ifc-step-sub">Natural language input — any scientific domain</div>
+              </div>
+            </div>
+            <div class="ifc-line"></div>
+            <div class="ifc-step">
+              <div class="ifc-dot dot-2"></div>
+              <div class="ifc-text">
+                <div class="ifc-step-title">Autonomous Pipeline</div>
+                <div class="ifc-step-sub">5 agents collaborate in iterative research loops</div>
+              </div>
+            </div>
+            <div class="ifc-line"></div>
+            <div class="ifc-step">
+              <div class="ifc-dot dot-3"></div>
+              <div class="ifc-text">
+                <div class="ifc-step-title">Validated Report</div>
+                <div class="ifc-step-sub">Evidence-backed findings with full reasoning trace</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENTS -->
+  <section class="section section-alt" id="agents">
+    <div class="container">
+      <div class="s-label">How It Works</div>
+      <h2 class="s-title">Five agents. One research goal.</h2>
+      <p class="s-sub">Each agent is purpose-built for a distinct phase of scientific inquiry. Together, they form a closed-loop research system that plans, executes, and critically evaluates its own work before producing results.</p>
+
+      <div class="agents-layout">
+        <div class="agent-card agent-card-lead">
+          <div class="agent-lead-inner">
+            <div class="agent-icon-lg sup-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="agent-lead-body">
+              <div class="agent-card-tag">Orchestration Layer</div>
+              <div class="agent-card-name">Supervisor Agent</div>
+              <div class="agent-card-desc">The central intelligence that owns the research strategy. It decomposes the query into a research plan, dispatches tasks to specialist agents, evaluates their outputs, decides when to iterate versus conclude, and composes the final report.</div>
+            </div>
+          </div>
+        </div>
+        <div class="agents-four">
+          <div class="agent-card">
+            <div class="agent-icon-sm search-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="7.5" cy="7.5" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M15 15l-3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="agent-card-tag">Discovery</div>
+            <div class="agent-card-name">Search Agent</div>
+            <div class="agent-card-desc">Retrieves and ranks evidence from scientific literature, preprint servers, and the web. Synthesises source material into structured context the other agents can reason over.</div>
+          </div>
+          <div class="agent-card">
+            <div class="agent-icon-sm code-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6 4L2 9l4 5M12 4l4 5-4 5M10 3l-2 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="agent-card-tag">Computation</div>
+            <div class="agent-card-name">Code Agent</div>
+            <div class="agent-card-desc">Writes and executes experiments in an isolated Python environment. Produces numerical results, statistical analyses, and visualisations that ground the research in reproducible evidence.</div>
+          </div>
+          <div class="agent-card">
+            <div class="agent-icon-sm analysis-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 13l3.5-4.5 3.5 2.5 3.5-6L15 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 15.5h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="agent-card-tag">Interpretation</div>
+            <div class="agent-card-name">Analysis Agent</div>
+            <div class="agent-card-desc">Interprets experimental outputs and literature signals through the lens of domain knowledge. Identifies patterns, draws conclusions, and surfaces implications the raw data alone wouldn't reveal.</div>
+          </div>
+          <div class="agent-card">
+            <div class="agent-icon-sm skeptic-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M9 6.5v4M9 12.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="agent-card-tag">Quality Gate</div>
+            <div class="agent-card-name">Skeptic Agent</div>
+            <div class="agent-card-desc">Actively challenges every conclusion before it reaches the final report. Flags weak evidence, logical gaps, and unexamined assumptions — ensuring research integrity by design, not by accident.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <div class="cta-glow"></div>
+        <div class="cta-inner">
+          <h2 class="cta-title">Start your research.</h2>
+          <p class="cta-sub">Create a free account and submit your first hypothesis.</p>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+            <a href="#" class="cta-btn" onclick="openAuth('register'); return false;">
+              Create account
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="#" class="cta-btn" onclick="openAuth('login'); return false;"
+               style="background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);">
+              Sign in
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-row">
+        <div class="footer-logo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Evidion
+        </div>
+        <div style="display:flex;gap:20px;align-items:center;">
+          <a href="/about" style="font-size:12px;color:var(--text-muted);text-decoration:none;font-family:var(--font-mono);">About</a>
+          <a href="#" onclick="openAuth('login'); return false;" style="font-size:12px;color:var(--text-muted);text-decoration:none;font-family:var(--font-mono);">Sign in</a>
+        </div>
+        <div class="footer-note">EvidionAI — Research Assistant · Open Source</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── AUTH MODAL ─────────────────────────────────────────────── -->
+  <div class="auth-overlay" id="authOverlay" onclick="handleOverlayClick(event)">
+    <div class="auth-modal" id="authModal">
+      <button class="auth-modal-close" onclick="closeAuth()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+
+      <!-- Main login/register tabs -->
+      <div id="authMainStep">
+        <div class="auth-modal-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Evidion
+        </div>
+        <div class="auth-modal-sub" id="authModalSub">Sign in to your research account</div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin"    onclick="switchTab('login')">Sign in</button>
+          <button class="auth-tab"        id="tabRegister" onclick="switchTab('register')">Create account</button>
+        </div>
+
+        <!-- Login fields -->
+        <div id="loginFields">
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="lEmail" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <div class="auth-field">
+            <label>Password</label>
+            <input type="password" id="lPassword" placeholder="••••••••" autocomplete="current-password"/>
+          </div>
+          <button class="auth-submit" id="loginBtn" onclick="doLogin()">Sign in</button>
+          <div class="auth-error" id="loginError"></div>
+          <div class="auth-switch" style="margin-top:14px;">
+            <a href="#" onclick="showForgotStep(); return false;" style="font-size:12px;color:var(--text-muted,#555);">Forgot password?</a>
+          </div>
+        </div>
+
+        <!-- Register fields -->
+        <div id="registerFields" style="display:none">
+          <div class="auth-field">
+            <label>Name <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <input type="text" id="rName" placeholder="Your name" autocomplete="name"/>
+          </div>
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="rEmail" placeholder="you@example.com" autocomplete="email"/>
+          </div>
+          <div class="auth-field">
+            <label>Password</label>
+            <input type="password" id="rPassword" placeholder="Min 8 characters" autocomplete="new-password"/>
+          </div>
+          <button class="auth-submit" id="registerBtn" onclick="doRegister()">Create account</button>
+          <div class="auth-error" id="registerError"></div>
+        </div>
+      </div>
+
+      <!-- Verify step -->
+      <div class="verify-step" id="verifyStep">
+        <div class="auth-modal-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Evidion
+        </div>
+        <div class="auth-modal-sub">Check your email for a 6-digit code.</div>
+        <div class="auth-field">
+          <label>Verification code</label>
+          <input type="text" id="vCode" placeholder="000000" maxlength="6" autocomplete="one-time-code"
+                 inputmode="numeric" style="text-align:center;letter-spacing:.3em;font-size:22px;font-family:var(--font-mono)"/>
+        </div>
+        <button class="auth-submit" id="verifyBtn" onclick="doVerify()">Verify email</button>
+        <div class="auth-error" id="verifyError"></div>
+        <div class="auth-switch">
+          Didn't get it? <a href="#" onclick="doResend(); return false;">Resend code</a>
+        </div>
+      </div>
+
+      <!-- Forgot password step -->
+      <div class="verify-step" id="forgotStep">
+        <div class="auth-modal-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Evidion
+        </div>
+        <div class="auth-modal-sub">Enter your email to receive a reset code.</div>
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" id="fEmail" placeholder="you@example.com" autocomplete="email"/>
+        </div>
+        <button class="auth-submit" id="forgotBtn" onclick="doForgot()">Send reset code</button>
+        <div class="auth-error" id="forgotError"></div>
+        <div class="auth-switch"><a href="#" onclick="showMainStep(); return false;">← Back to sign in</a></div>
+      </div>
+
+      <!-- Reset password step -->
+      <div class="verify-step" id="resetStep">
+        <div class="auth-modal-logo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Evidion
+        </div>
+        <div class="auth-modal-sub">Enter the 6-digit code from your email and a new password.</div>
+        <div class="auth-field">
+          <label>Reset code</label>
+          <input type="text" id="rCode" placeholder="000000" maxlength="6" inputmode="numeric"
+                 autocomplete="one-time-code" style="text-align:center;letter-spacing:.3em;font-size:22px;font-family:var(--font-mono)"/>
+        </div>
+        <div class="auth-field" style="margin-top:12px;">
+          <label>New password</label>
+          <input type="password" id="rNewPw" placeholder="Min 8 characters" autocomplete="new-password"/>
+        </div>
+        <button class="auth-submit" id="resetBtn" onclick="doReset()">Update password</button>
+        <div class="auth-error" id="resetError"></div>
+        <div class="auth-switch"><a href="#" onclick="showMainStep(); return false;">← Back to sign in</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* ── Config ──────────────────────────────────────────────────── */
+  const AUTH_BASE  = '/auth';
+  let pendingEmail = null;
+
+  /* ── Modal open/close ────────────────────────────────────────── */
+  function openAuth(tab) {
+    document.getElementById('authOverlay').classList.add('open');
+    showMainStep();
+    switchTab(tab || 'login');
+    setTimeout(() => {
+      const f = tab === 'register'
+        ? document.getElementById('rName')
+        : document.getElementById('lEmail');
+      f && f.focus();
+    }, 120);
+  }
+  function closeAuth() {
+    document.getElementById('authOverlay').classList.remove('open');
+  }
+  function handleOverlayClick(e) {
+    if(e.target === document.getElementById('authOverlay')) closeAuth();
+  }
+
+  /* ── Tab switching ────────────────────────────────────────────── */
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('tabLogin').classList.toggle('active', isLogin);
+    document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+    document.getElementById('loginFields').style.display    = isLogin ? 'block' : 'none';
+    document.getElementById('registerFields').style.display = isLogin ? 'none'  : 'block';
+    document.getElementById('authModalSub').textContent = isLogin
+      ? 'Sign in to your research account'
+      : 'Create a free account to start researching';
+    clearErrors();
+  }
+
+  function showMainStep() {
+    document.getElementById('authMainStep').style.display = 'block';
+    document.getElementById('verifyStep').classList.remove('visible');
+    document.getElementById('forgotStep').classList.remove('visible');
+    document.getElementById('resetStep').classList.remove('visible');
+  }
+  function showVerifyStep() {
+    document.getElementById('authMainStep').style.display = 'none';
+    document.getElementById('verifyStep').classList.add('visible');
+    document.getElementById('forgotStep').classList.remove('visible');
+    document.getElementById('resetStep').classList.remove('visible');
+    setTimeout(() => document.getElementById('vCode').focus(), 80);
+  }
+  function showForgotStep() {
+    document.getElementById('authMainStep').style.display = 'none';
+    document.getElementById('verifyStep').classList.remove('visible');
+    document.getElementById('forgotStep').classList.add('visible');
+    document.getElementById('resetStep').classList.remove('visible');
+    setTimeout(() => document.getElementById('fEmail').focus(), 80);
+  }
+  function showResetStep() {
+    document.getElementById('authMainStep').style.display = 'none';
+    document.getElementById('verifyStep').classList.remove('visible');
+    document.getElementById('forgotStep').classList.remove('visible');
+    document.getElementById('resetStep').classList.add('visible');
+    setTimeout(() => document.getElementById('rCode').focus(), 80);
+  }
+
+  function clearErrors() {
+    ['loginError','registerError','verifyError','forgotError','resetError'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.textContent=''; el.style.display='none'; el.style.color=''; }
+    });
+  }
+  function showError(id, msg, green=false) {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = msg; el.style.display = 'block';
+    el.style.color = green ? '#10b981' : '';
+  }
+  function setBusy(id, busy, label) {
+    const b = document.getElementById(id);
+    if(!b) return;
+    b.disabled = busy; b.textContent = busy ? 'Please wait…' : label;
+  }
+
+  /* ── API ─────────────────────────────────────────────────────── */
+  async function apiPost(url, body) {
+    const res  = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok) {
+      const err = new Error(data?.detail || `Error ${res.status}`);
+      err.status = res.status; throw err;
+    }
+    return data;
+  }
+
+  /* ── Login ───────────────────────────────────────────────────── */
+  async function doLogin() {
+    const email    = document.getElementById('lEmail').value.trim();
+    const password = document.getElementById('lPassword').value;
+    if(!email || !password) return showError('loginError', 'Fill in all fields');
+    setBusy('loginBtn', true, 'Sign in');
+    try {
+      const data = await apiPost(`${AUTH_BASE}/login`, {email, password});
+      onSuccess(data);
+    } catch(e) {
+      if(e.status === 403) {
+        pendingEmail = email; showVerifyStep();
+      } else {
+        showError('loginError', e.message || 'Login failed');
+      }
+    } finally { setBusy('loginBtn', false, 'Sign in'); }
+  }
+
+  /* ── Register ────────────────────────────────────────────────── */
+  async function doRegister() {
+    const name     = document.getElementById('rName').value.trim();
+    const email    = document.getElementById('rEmail').value.trim();
+    const password = document.getElementById('rPassword').value;
+    if(!email || !password) return showError('registerError', 'Fill in required fields');
+    if(password.length < 8) return showError('registerError', 'Password must be at least 8 characters');
+    setBusy('registerBtn', true, 'Create account');
+    try {
+      await apiPost(`${AUTH_BASE}/register`, {email, password, name: name || null});
+      pendingEmail = email; showVerifyStep();
+    } catch(e) {
+      showError('registerError', e.message || 'Registration failed');
+    } finally { setBusy('registerBtn', false, 'Create account'); }
+  }
+
+  /* ── Verify ──────────────────────────────────────────────────── */
+  async function doVerify() {
+    const code = document.getElementById('vCode').value.trim().replace(/\D/g,'');
+    if(code.length !== 6) return showError('verifyError', 'Enter the 6-digit code from your email');
+    if(!pendingEmail) { showMainStep(); return; }
+    setBusy('verifyBtn', true, 'Verify email');
+    try {
+      const data = await apiPost(`${AUTH_BASE}/verify-email`, {email: pendingEmail, code});
+      onSuccess(data);
+    } catch(e) {
+      showError('verifyError', e.message || 'Verification failed');
+    } finally { setBusy('verifyBtn', false, 'Verify email'); }
+  }
+
+  async function doResend() {
+    if(!pendingEmail) return;
+    try {
+      await apiPost(`${AUTH_BASE}/resend-code`, {email: pendingEmail});
+      showError('verifyError', '✓ New code sent', true);
+    } catch(e) {
+      showError('verifyError', e.message || 'Failed to resend');
+    }
+  }
+
+  /* ── Forgot password ─────────────────────────────────────────── */
+  let _forgotEmail = '';
+
+  async function doForgot() {
+    const email = document.getElementById('fEmail').value.trim();
+    if(!email) return showError('forgotError', 'Please enter your email.');
+    setBusy('forgotBtn', true, 'Send reset code');
+    const errEl = document.getElementById('forgotError');
+    errEl.style.display = 'none'; errEl.textContent = '';
+    try {
+      await apiPost(`${AUTH_BASE}/forgot-password`, {email});
+      _forgotEmail = email;
+      showResetStep();
+    } catch(e) {
+      showError('forgotError', e.message || 'Something went wrong.');
+    } finally { setBusy('forgotBtn', false, 'Send reset code'); }
+  }
+
+  async function doReset() {
+    const code     = document.getElementById('rCode').value.trim();
+    const password = document.getElementById('rNewPw').value;
+    if(!code)              return showError('resetError', 'Please enter the reset code.');
+    if(password.length<8)  return showError('resetError', 'Password must be at least 8 characters.');
+    if(!_forgotEmail)      return showError('resetError', 'Please go back and enter your email.');
+    setBusy('resetBtn', true, 'Update password');
+    const errEl = document.getElementById('resetError');
+    errEl.style.display = 'none'; errEl.textContent = '';
+    try {
+      await apiPost(`${AUTH_BASE}/reset-password`, {email: _forgotEmail, code, new_password: password});
+      showMainStep();
+      switchTab('login');
+      document.getElementById('lEmail').value = _forgotEmail;
+      _forgotEmail = '';
+      showError('loginError', '✓ Password updated — sign in below.', true);
+    } catch(e) {
+      showError('resetError', e.message || 'Invalid or expired code.');
+    } finally { setBusy('resetBtn', false, 'Update password'); }
+  }
+
+  /* ── Success ─────────────────────────────────────────────────── */
+  function onSuccess(data) {
+    localStorage.setItem('evidion_token', data.access_token);
+    // Redirect straight to the app
+    window.location.href = '/app';
+  }
+
+  /* ── Enter key support ───────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('lPassword').addEventListener('keydown', e => e.key==='Enter' && doLogin());
+    document.getElementById('lEmail').addEventListener('keydown',    e => e.key==='Enter' && doLogin());
+    document.getElementById('rPassword').addEventListener('keydown', e => e.key==='Enter' && doRegister());
+    document.getElementById('vCode').addEventListener('keydown',     e => e.key==='Enter' && doVerify());
+    document.getElementById('fEmail').addEventListener('keydown',    e => e.key==='Enter' && doForgot());
+    document.getElementById('rCode').addEventListener('keydown',     e => e.key==='Enter' && doReset());
+    document.getElementById('rNewPw').addEventListener('keydown',    e => e.key==='Enter' && doReset());
+    document.getElementById('vCode').addEventListener('input',       e => {
+      e.target.value = e.target.value.replace(/\D/g,'');
+    });
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape') closeAuth();
+    });
+
+    // If already logged in, redirect to app
+    const token = localStorage.getItem('evidion_token');
+    if(token) window.location.href = '/app';
+  });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+# Environment
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Docker volumes / data
+data/
+backups/*.sql
+backups/*.dump
+
+# SSL certificates
+ssl/*.pem
+ssl/*.crt
+ssl/*.key
+ssl/*.csr
+!ssl/.gitignore
+
+# ChromaDB
+*.chroma/
+chroma_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/

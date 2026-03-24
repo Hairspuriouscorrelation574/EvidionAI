@@ -1,0 +1,103 @@
+# ══════════════════════════════════════════════════════════════════════════════
+#  EvidionAI — Docker Compose
+#  Three services: ai_agents_service → api_gateway → frontend (nginx)
+#
+#  Quick start:
+#    cp env.example .env        # edit .env with your LLM config
+#    docker compose up --build
+# ══════════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ── AI Agents Service ────────────────────────────────────────────────────────
+  ai_agents_service:
+    container_name: evidionai_agents
+    build:
+      context: .
+      dockerfile: docker/backend/ai_agents_service/Dockerfile
+    environment:
+      LLM_PROVIDER:      ${LLM_PROVIDER:-ollama_local}
+      LLM_MODEL:         ${LLM_MODEL:-deepseek-r:18b}
+      LLM_CTX:           ${LLM_CTX:-16384}
+      OLLAMA_HOST:       ${OLLAMA_HOST:-http://host.docker.internal:11434}
+      OLLAMA_BASE_URL:   ${OLLAMA_BASE_URL:-https://api.ollama.com}
+      OLLAMA_API_KEY:    ${OLLAMA_API_KEY:-}
+      OPENAI_API_KEY:    ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL:   ${OPENAI_BASE_URL:-}
+      MEMORY_DIR:        ${MEMORY_DIR:-/data/memory}
+      WORKER_THREADS:    ${WORKER_THREADS:-4}
+    expose:
+      - "8000"
+    volumes:
+      - memory_data:${MEMORY_DIR:-/data/memory}
+      - /var/run/docker.sock:/var/run/docker.sock
+    user: root
+    networks:
+      - agents
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+
+  # ── API Gateway ───────────────────────────────────────────────────────────────
+  api_gateway:
+    container_name: evidionai_api
+    build:
+      context: .
+      dockerfile: docker/backend/api_gateway/Dockerfile
+    environment:
+      AI_AGENTS_HOST:       ai_agents_service
+      DATA_DIR:             /data
+      AI_AGENTS_PORT:       8000
+      AI_REQUEST_TIMEOUT:   ${AI_REQUEST_TIMEOUT:-14400}
+      AI_QUERY_MAX_LENGTH:  ${AI_QUERY_MAX_LENGTH:-5000}
+      ALLOWED_ORIGINS:      ${ALLOWED_ORIGINS:-*}
+      WORKER_THREADS:       ${WORKER_THREADS:-4}
+    expose:
+      - "8001"
+    volumes:
+      - db_data:/data
+    networks:
+      - backend
+      - agents
+    depends_on:
+      - ai_agents_service
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+
+  # ── Frontend ──────────────────────────────────────────────────────────────────
+  frontend:
+    container_name: evidionai_frontend
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - backend
+    depends_on:
+      - api_gateway
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64m
+
+
+volumes:
+  db_data:
+    name: evidionai_db
+  memory_data:
+    name: evidionai_memory
+
+networks:
+  backend:
+    driver: bridge
+  agents:
+    driver: bridge

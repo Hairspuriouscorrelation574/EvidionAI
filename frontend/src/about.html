@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EvidionAI — Autonomous Research Platform</title>
+  <meta name="description" content="Evidion is a multi-agent AI research system that autonomously conducts scientific inquiry — from literature search to structured reporting."/>
+  <meta property="og:title"       content="Evidion — Autonomous Research Platform"/>
+  <meta property="og:description" content="Multi-agent AI research: literature search, code execution, skeptic review — automated end to end."/>
+  <meta property="og:type"        content="website"/>
+  <meta property="og:image"       content="/og-image.png"/>
+  <meta name="twitter:card"       content="summary_large_image"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="icon" type="image/png"     href="/favicon.png" sizes="32x32"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="about.css"/>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Evidion
+    </a>
+    <a href="/" class="nav-back">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8 2L3 6.5l5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Open Platform
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-noise"></div>
+    <div class="hero-lines"></div>
+    <div class="container hero-inner">
+      <div class="hero-label">EvidionAI — Research Assistant</div>
+      <h1 class="hero-title">
+        The research lab<br>
+        <span class="hero-title-em">runs itself.</span>
+      </h1>
+      <p class="hero-sub">
+        EvidionAI is an autonomous multi-agent AI system that conducts end-to-end scientific research — 
+        from hypothesis and literature search, through computation and analysis, 
+        to a structured, peer-reviewable report.
+      </p>
+      <div class="hero-chips">
+        <div class="hero-chip">
+          <div class="chip-n">5</div>
+          <div class="chip-l">Specialized<br>Agents</div>
+        </div>
+        <div class="hero-chip">
+          <div class="chip-n">∞</div>
+          <div class="chip-l">Research<br>Questions</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </section>
+
+  <!-- IDEA -->
+  <section class="section" id="idea">
+    <div class="container">
+      <div class="s-label">The Problem</div>
+      <h2 class="s-title">Research moves at the speed of a researcher.<br><em>Until now.</em></h2>
+      <div class="idea-grid">
+        <div class="idea-prose">
+          <p>Scientific progress is bottlenecked not by lack of intelligence — but by the <strong>mechanics of research</strong>: the weeks spent in literature search, the months of iterative coding, the constant context-switching between tools, databases, and frameworks.</p>
+          <p>EvidionAI collapses that timeline. A researcher poses a question in natural language. The system takes it from there — autonomously planning, searching, computing, questioning its own conclusions, and delivering a structured report.</p>
+          <p>The result: <strong>hours instead of months</strong>. Human researchers stay where they belong — asking sharper questions, not running mechanical tasks.</p>
+        </div>
+        <div class="idea-flow-card">
+          <div class="ifc-header">Research Lifecycle</div>
+          <div class="ifc-steps">
+            <div class="ifc-step">
+              <div class="ifc-dot dot-1"></div>
+              <div class="ifc-text">
+                <div class="ifc-step-title">Hypothesis</div>
+                <div class="ifc-step-sub">Natural language input — any scientific domain</div>
+              </div>
+            </div>
+            <div class="ifc-line"></div>
+            <div class="ifc-step">
+              <div class="ifc-dot dot-2"></div>
+              <div class="ifc-text">
+                <div class="ifc-step-title">Autonomous Pipeline</div>
+                <div class="ifc-step-sub">5 agents collaborate in iterative research loops</div>
+              </div>
+            </div>
+            <div class="ifc-line"></div>
+            <div class="ifc-step">
+              <div class="ifc-dot dot-3"></div>
+              <div class="ifc-text">
+                <div class="ifc-step-title">Validated Report</div>
+                <div class="ifc-step-sub">Evidence-backed findings with full reasoning trace</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- LIFECYCLE -->
+  <section class="section section-alt" id="lifecycle">
+    <div class="container">
+      <div class="s-label">Under the Hood</div>
+      <h2 class="s-title">From question to report,<br><em>end to end.</em></h2>
+      <p class="s-sub">Every research query follows the same rigorous lifecycle — fully automated, fully auditable.</p>
+      <div class="lifecycle-grid">
+        <div class="lc-step">
+          <div class="lc-num">01</div>
+          <div class="lc-body">
+            <div class="lc-title">Query Planning</div>
+            <div class="lc-desc">The Supervisor decomposes your hypothesis into a structured research plan — identifying required evidence types, methods, and success criteria before any work begins.</div>
+          </div>
+        </div>
+        <div class="lc-step">
+          <div class="lc-num">02</div>
+          <div class="lc-body">
+            <div class="lc-title">Literature & Evidence</div>
+            <div class="lc-desc">The Search Agent retrieves, ranks, and synthesises relevant papers, preprints, and web sources — building a knowledge base scoped to the research question.</div>
+          </div>
+        </div>
+        <div class="lc-step">
+          <div class="lc-num">03</div>
+          <div class="lc-body">
+            <div class="lc-title">Computation</div>
+            <div class="lc-desc">The Code Agent writes and executes reproducible Python experiments in an isolated environment, producing quantitative results and visualisations.</div>
+          </div>
+        </div>
+        <div class="lc-step">
+          <div class="lc-num">04</div>
+          <div class="lc-body">
+            <div class="lc-title">Analysis & Validation</div>
+            <div class="lc-desc">Results are interpreted by the Analysis Agent and actively challenged by the Skeptic — ensuring conclusions are grounded in evidence, not just plausible.</div>
+          </div>
+        </div>
+        <div class="lc-step">
+          <div class="lc-num">05</div>
+          <div class="lc-body">
+            <div class="lc-title">Structured Report</div>
+            <div class="lc-desc">The Supervisor composes a final report with full reasoning trace — exportable as PDF or Markdown, with the complete agent history available for audit.</div>
+          </div>
+        </div>
+        <div class="lc-step lc-last">
+          <div class="lc-num">∞</div>
+          <div class="lc-body">
+            <div class="lc-title">Iterative Loops</div>
+            <div class="lc-desc">If conclusions are weak or evidence insufficient, the Supervisor sends agents back for another iteration — until convergence criteria are met.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENTS -->
+  <section class="section section-alt" id="agents">
+    <div class="container">
+      <div class="s-label">How It Works</div>
+      <h2 class="s-title">Five agents. One research goal.</h2>
+      <p class="s-sub">Each agent is purpose-built for a distinct phase of scientific inquiry. Together, they form a closed-loop research system that plans, executes, and critically evaluates its own work before producing results.</p>
+
+      <div class="agents-layout">
+
+        <!-- Supervisor — full width, prominent -->
+        <div class="agent-card agent-card-lead">
+          <div class="agent-lead-inner">
+            <div class="agent-icon-lg sup-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="agent-lead-body">
+              <div class="agent-card-tag">Orchestration Layer</div>
+              <div class="agent-card-name">Supervisor Agent</div>
+              <div class="agent-card-desc">The central intelligence that owns the research strategy. It decomposes the query into a research plan, dispatches tasks to specialist agents, evaluates their outputs, decides when to iterate versus conclude, and composes the final report. The Supervisor never acts directly on data — it reasons, delegates, and governs.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 specialist agents -->
+        <div class="agents-four">
+
+          <div class="agent-card">
+            <div class="agent-icon-sm search-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <circle cx="7.5" cy="7.5" r="5" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M15 15l-3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="agent-card-tag">Discovery</div>
+            <div class="agent-card-name">Search Agent</div>
+            <div class="agent-card-desc">Retrieves and ranks evidence from scientific literature, preprint servers, and the web. Synthesises source material into structured context the other agents can reason over.</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-icon-sm code-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M6 4L2 9l4 5M12 4l4 5-4 5M10 3l-2 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="agent-card-tag">Computation</div>
+            <div class="agent-card-name">Code Agent</div>
+            <div class="agent-card-desc">Writes and executes experiments in an isolated Python environment. Produces numerical results, statistical analyses, and visualisations that ground the research in reproducible evidence.</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-icon-sm analysis-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M2 13l3.5-4.5 3.5 2.5 3.5-6L15 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 15.5h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="agent-card-tag">Interpretation</div>
+            <div class="agent-card-name">Analysis Agent</div>
+            <div class="agent-card-desc">Interprets experimental outputs and literature signals through the lens of domain knowledge. Identifies patterns, draws conclusions, and surfaces implications the raw data alone wouldn't reveal.</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-icon-sm skeptic-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M9 6.5v4M9 12.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="agent-card-tag">Quality Gate</div>
+            <div class="agent-card-name">Skeptic Agent</div>
+            <div class="agent-card-desc">Actively challenges every conclusion before it reaches the final report. Flags weak evidence, logical gaps, and unexamined assumptions — ensuring research integrity by design, not by accident.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="section" id="roadmap">
+    <div class="container">
+      <div class="s-label">Vision</div>
+      <h2 class="s-title">Building toward autonomous science.</h2>
+      <div class="roadmap">
+
+        <div class="rm-item rm-done">
+          <div class="rm-marker">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="rm-body">
+            <div class="rm-phase">Phase 1</div>
+            <div class="rm-name">Multi-Agent Core</div>
+            <div class="rm-desc">Five-agent architecture, LLM abstraction layer supporting both cloud and local models, containerised deployment.</div>
+          </div>
+        </div>
+
+        <div class="rm-item rm-done">
+          <div class="rm-marker">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="rm-body">
+            <div class="rm-phase">Phase 2</div>
+            <div class="rm-name">Research Platform</div>
+            <div class="rm-desc">Multi-user authentication, persistent research history, asynchronous query handling, profile management.</div>
+          </div>
+        </div>
+
+        <div class="rm-item rm-active">
+          <div class="rm-marker rm-marker-active">
+            <div class="rm-pulse"></div>
+          </div>
+          <div class="rm-body">
+            <div class="rm-phase">Phase 3 — Now</div>
+            <div class="rm-name">Deep Research & Tool Use</div>
+            <div class="rm-desc">RAG over scientific databases (arXiv, Semantic Scholar, PubMed), code interpreter with visualisation output, multi-turn iterative reasoning.</div>
+          </div>
+        </div>
+
+        <div class="rm-item">
+          <div class="rm-marker rm-marker-future"></div>
+          <div class="rm-body">
+            <div class="rm-phase">Phase 4</div>
+            <div class="rm-name">Collaboration & Export</div>
+            <div class="rm-desc">Research team workspaces, PDF/LaTeX report export, citation management, API access for programmatic use.</div>
+          </div>
+        </div>
+
+        <div class="rm-item">
+          <div class="rm-marker rm-marker-future"></div>
+          <div class="rm-body">
+            <div class="rm-phase">Phase 5</div>
+            <div class="rm-name">Autonomous Research Lab</div>
+            <div class="rm-desc">Long-horizon research projects, automated manuscript drafting, peer-review simulation, integration with laboratory instrument APIs.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <div class="cta-glow"></div>
+        <div class="cta-inner">
+          <h2 class="cta-title">Start your research.</h2>
+          <p class="cta-sub">Submit a hypothesis. EvidionAI handles the rest.</p>
+          <a href="/" class="cta-btn">
+            Open Platform
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-row">
+        <div class="footer-logo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Evidion
+        </div>
+        <div class="footer-note">EvidionAI · Open Source · MIT License</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
